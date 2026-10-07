@@ -2,12 +2,12 @@
 
 ## Profile conformance
 
-This profile establishes the governed product identity and approved target boundary for the new `AdvNFC Reader Agent` repository. Runtime/source migration remains governed separately by ASTV-322.
+This profile defines the governed product identity and current authority for the `AdvNFC Reader Agent` repository after the controlled reader-agent migration under ASTV-322.
 
 ## Document status
 
-- Governance state: approved target pending completion of ASTV-321
-- Product runtime state: current reader-agent runtime remains owned from `83degrees/AdvNFC` until ASTV-322 migration is accepted
+- Governance state: current
+- Product runtime state: authoritative reader-agent source, packaging, tests, deployment guidance and provider contract are owned by this repository; deployed production state remains unchanged until a separately authorised package deployment
 
 ## Product identity
 
@@ -52,10 +52,10 @@ AdvNFC Reader Agent owns the Raspberry Pi OS software that acquires NFC UIDs fro
 
 | Boundary or capability | Relationship | Owner | Notes |
 | --- | --- | --- | --- |
-| Reader-agent runtime software | approved target ownership | AdvNFC Reader Agent | Authoritative source transfers from AdvNFC under ASTV-322. |
-| Debian package and release route | approved target ownership | AdvNFC Reader Agent | Package remains `advnfc-reader-agent`. |
-| Reader-agent systemd service | approved target ownership | AdvNFC Reader Agent | Service identity remains `advnfc-reader-agent.service`. |
-| Reader-event MQTT interface | approved target provided contract | AdvNFC Reader Agent | Provider authority transfers under ASTV-322; semantics are unchanged by the split. |
+| Reader-agent runtime software | owned | AdvNFC Reader Agent | Authoritative reader-agent source is owned here following ASTV-322. |
+| Debian package and release route | owned | AdvNFC Reader Agent | Package remains `advnfc-reader-agent`. |
+| Reader-agent systemd service | owned | AdvNFC Reader Agent | Service identity remains `advnfc-reader-agent.service`. |
+| Reader-event MQTT interface | provided | AdvNFC Reader Agent | Provider authority is owned here; ASTV-322 transferred ownership without changing interface semantics. |
 | AdvNFC Home Assistant integration/configuration | external consumer | AdvNFC | Remains in `83degrees/AdvNFC`. |
 | MQTT broker/network transport | external | Infrastructure owner | Product publishes configured topics but does not own transport. |
 | Raspberry Pi OS / libnfc / ACR122U hardware | external | Platform/hardware owners | Product owns the agent software only. |
@@ -64,14 +64,14 @@ AdvNFC Reader Agent owns the Raspberry Pi OS software that acquires NFC UIDs fro
 ## Approved architecture location
 
 - Approved architecture location: `01_Architecture/ADVNFC_READER_AGENT_ARCHITECTURE.md`
-- Architecture state: approved target pending completion of ASTV-321
+- Architecture state: current
 - Material DDRs: None at bootstrap
 
 ## Contracts provided
 
 | Contract | Status/version | Authoritative provider-owned location | Consumers | Notes |
 | --- | --- | --- | --- | --- |
-| `ADVNFC_READER_EVENT_MQTT_INTERFACE.md` | existing semantics; transfer pending ASTV-322 | target `03_Contracts/ADVNFC_READER_EVENT_MQTT_INTERFACE.md` | AdvNFC / Home Assistant reader-event path | Current authoritative copy remains in AdvNFC until the governed migration is accepted. |
+| `ADVNFC_READER_EVENT_MQTT_INTERFACE.md` | 3.0.0 candidate | `03_Contracts/ADVNFC_READER_EVENT_MQTT_INTERFACE.md` | AdvNFC / Home Assistant reader-event path | This repository is the authoritative provider location after ASTV-322. |
 
 ## Contracts consumed
 
@@ -102,14 +102,13 @@ Repository separation does not itself rename runtime identities.
 
 | Unit | Deployment type | Authoritative source | Target | Mechanism | Release/update route | Validation route | Rollback/recovery identity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| AdvNFC Raspberry Pi reader agent | `rpi_os_software` | approved target `04_Implementation/rpi_os/source/**` | Raspberry Pi OS package-owned filesystem paths | `deb` | versioned `.deb` GitHub Release from this repository after ASTV-322 | repository tests, package validation and target runtime evidence | prior known-good versioned `.deb` |
+| AdvNFC Raspberry Pi reader agent | `rpi_os_software` | `04_Implementation/rpi_os/source/**` | Raspberry Pi OS package-owned filesystem paths | `deb` | versioned `.deb` GitHub Release from this repository | repository tests, package validation and target runtime evidence | prior known-good versioned `.deb` |
 
-Debian build/package machinery belongs at `04_Implementation/rpi_os/packaging/deb/**`. No reader-agent runtime payload is migrated into this repository by ASTV-321; ASTV-322 performs that controlled transfer.
+Debian build/package machinery is owned at `04_Implementation/rpi_os/packaging/deb/**`. Reader-agent tests are maintained under `05_Tests/**`, the deployment runbook under `08_Deployment/**`, and future reader-agent package releases originate only from this repository.
 
 ## Production and evidence route
 
-- Production route: existing deployed reader agent remains sourced from AdvNFC until ASTV-322 completes; target route is a versioned Debian package released from this repository and installed on the governed Raspberry Pi node(s).
+- Production route: versioned Debian packages are built and released from this repository and installed on governed Raspberry Pi node(s) only with separate deployment authority. Existing deployed nodes are not changed by the repository migration itself.
 - Evidence route: Git/GitHub for exact source/release identity plus target runtime evidence recorded against the governing Linear issue.
 - Secrets and mutable-state boundary: credentials, selectors, profiles and other node-local `/etc/advnfc/**` state remain outside package ownership and governed repository source.
 - Validation evidence route: repository checks, Debian package validation and deployment/runtime evidence recorded in Linear.
-- Known bootstrap limitation: this repository contains governance and product-boundary scaffolding only until ASTV-322 migrates the authoritative reader-agent product content.
