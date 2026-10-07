@@ -2,11 +2,7 @@
 
 ## 1. Status and authority
 
-This document defines the approved target product boundary established through ASTV-318/ASTV-321 for the repository split.
-
-ASTV-321 establishes the repository and boundary only. ASTV-322 is responsible for transferring authoritative reader-agent implementation, packaging, tests, deployment material and provider-contract ownership from `83degrees/AdvNFC`.
-
-Until ASTV-322 is accepted, the current runtime/source authority remains the existing AdvNFC repository.
+This document defines the current product boundary established through ASTV-318/ASTV-322. `83degrees/AdvNFC-Reader-Agent` is authoritative for the Raspberry Pi reader-agent implementation, Debian packaging, reader-specific tests, deployment guidance and the reader-event MQTT provider contract. The repository migration does not itself alter any deployed node.
 
 ## 2. Product responsibility
 
@@ -38,11 +34,11 @@ The single deployable unit is:
 
 `rpi_os_software → deb`
 
-Target authoritative runtime source:
+Authoritative runtime source:
 
 `04_Implementation/rpi_os/source/**`
 
-Target Debian packaging/build machinery:
+Debian packaging/build machinery:
 
 `04_Implementation/rpi_os/packaging/deb/**`
 
@@ -63,18 +59,14 @@ The following identities are preserved through migration:
 
 The reader-event MQTT interface is provided by the reader-agent product and consumed by AdvNFC/Home Assistant.
 
-Provider ownership of the existing contract transfers to this repository under ASTV-322 without changing its semantics merely because the repository boundary changes.
-
-AdvNFC must consume the provider-owned contract rather than retain an authoritative duplicate after migration.
+Provider ownership of the existing contract resides in this repository. ASTV-322 changed ownership only; it did not change the interface semantics. AdvNFC consumes the provider-owned contract and must not maintain an authoritative duplicate.
 
 ## 6. Release boundary
 
 Future reader-agent GitHub Releases and `.deb` artefacts belong only to `83degrees/AdvNFC-Reader-Agent`.
 
-Historical `reader-agent-*` Git tags remain in `83degrees/AdvNFC` for provenance. Historical GitHub Release objects in AdvNFC are retired only after ASTV-322 has preserved their provenance and ASTV-323 performs the verified cleanup.
+Historical `reader-agent-*` Git tags remain in `83degrees/AdvNFC` for provenance. Historical GitHub Release objects in AdvNFC are retired only after ASTV-322 provenance capture is verified and ASTV-323 performs the governed cleanup.
 
-## 7. Bootstrap state
+## 7. Migration state
 
-ASTV-321 intentionally contains no migrated reader-agent runtime payload.
-
-The canonical source and packaging paths may be represented by non-runtime bootstrap pointers, but the actual product transfer is gated to ASTV-322.
+ASTV-322 transfers the existing reader-agent product without redesigning runtime behaviour. Existing production deployment remains unchanged until separately authorised deployment of a package released from this repository.
